@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Name - Portfolio</title>
+    <title>Anant Chebiam - Portfolio</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=VT323&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
@@ -12,700 +14,1668 @@
         }
 
         body {
-            font-family: 'Times New Roman', Times, serif;
-            line-height: 1.6;
-            color: #e0e0e0;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%, #0a0a0a 100%);
-            min-height: 100vh;
-            position: relative;
+            font-family: 'VT323', monospace;
+            background: #0a0a0a;
+            color: #00ff00;
+            overflow-x: hidden;
+            cursor: crosshair;
         }
 
-        body::before {
-            content: '';
+        /* Retro CRT Effect */
+        .crt-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: 
-                radial-gradient(circle at 20% 20%, rgba(192, 192, 192, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(128, 128, 128, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 40% 60%, rgba(169, 169, 169, 0.08) 0%, transparent 50%);
+                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
             pointer-events: none;
-            z-index: -1;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Header */
-        header {
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(15px);
-            padding: 1rem 0;
-            position: fixed;
-            width: 100%;
-            top: 0;
             z-index: 1000;
-            border-bottom: 1px solid rgba(192, 192, 192, 0.2);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.8);
+            animation: flicker 0.15s infinite linear;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 1; }
+            98% { opacity: 1; }
+            99% { opacity: 0.98; }
+            100% { opacity: 1; }
+        }
+
+        /* Boot Screen */
+        .boot-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 1s ease-out;
+        }
+
+        .boot-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .boot-text {
+            font-family: 'VT323', monospace;
+            font-size: 1.5rem;
+            color: #00ff00;
+            text-align: center;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .loading-bar {
+            width: 400px;
+            height: 20px;
+            border: 2px solid #00ff00;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00, #00aa00);
+            width: 0%;
+            animation: loading 3s ease-in-out forwards;
+        }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        /* Main Game Screen */
+        .game-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(45deg, #1a0033, #000066, #003300);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 1s ease-in;
+        }
+
+        .game-container.active {
+            opacity: 1;
+        }
+
+        .basketball-court {
+            width: 800px;
+            height: 500px;
+            background: #8B4513;
+            border: 4px solid #fff;
+            position: relative;
+            border-radius: 20px;
+            box-shadow: 
+                0 0 20px #00ff00,
+                inset 0 0 20px rgba(0, 255, 0, 0.1);
+        }
+
+        .court-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .center-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 120px;
+            height: 120px;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .three-point-line {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300px;
+            height: 200px;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .basketball-player {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 4rem;
+            color: #00ff00;
+            text-shadow: 0 0 20px #00ff00;
+            animation: bounce 2s ease-in-out infinite;
+            cursor: pointer;
+            user-select: none;
             transition: all 0.3s ease;
         }
 
-        nav {
+        .basketball-player:hover {
+            transform: translateX(-50%) scale(1.1);
+            text-shadow: 0 0 30px #00ff00;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-20px); }
+        }
+
+        .basketball {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            font-size: 2rem;
+            color: #ff6600;
+            transform: translate(-50%, -50%);
+            animation: spin 3s linear infinite;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .basketball:hover {
+            transform: translate(-50%, -50%) scale(1.2);
+            animation: spin 0.5s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .score-display {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Orbitron', monospace;
+            font-size: 2rem;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+            letter-spacing: 2px;
+        }
+
+        .game-ui {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            font-family: 'VT323', monospace;
+            font-size: 1.2rem;
+        }
+
+        .ui-element {
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            padding: 10px 20px;
+            border-radius: 10px;
+            color: #00ff00;
+            text-shadow: 0 0 5px #00ff00;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .ui-element:hover {
+            background: rgba(0, 255, 0, 0.2);
+            box-shadow: 0 0 10px #00ff00;
+            transform: translateY(-3px);
+        }
+
+        .press-start {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'VT323', monospace;
+            font-size: 1.5rem;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+            animation: blink 1s infinite;
+            cursor: pointer;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Portfolio Content */
+        .portfolio-content {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+            transform: translateY(100%);
+            transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            overflow-y: auto;
+            z-index: 500;
+        }
+
+        .portfolio-content.active {
+            transform: translateY(0);
+        }
+
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: rgba(0, 0, 0, 0.9);
+            border-bottom: 2px solid #00ff00;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 0 50px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
         }
 
-        .logo {
+        .nav-logo {
+            font-family: 'Orbitron', monospace;
             font-size: 1.8rem;
-            font-weight: 700;
-            color: #c0c0c0;
-            text-shadow: 0 0 10px rgba(192, 192, 192, 0.5);
+            font-weight: 900;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
         }
 
         .nav-links {
             display: flex;
+            gap: 30px;
             list-style: none;
-            gap: 2.5rem;
         }
 
         .nav-links a {
+            color: #00ff00;
             text-decoration: none;
-            color: #e0e0e0;
-            font-weight: 500;
-            font-size: 1.1rem;
+            font-family: 'VT323', monospace;
+            font-size: 1.3rem;
             transition: all 0.3s ease;
             position: relative;
         }
 
         .nav-links a:hover {
-            color: #c0c0c0;
-            text-shadow: 0 0 8px rgba(192, 192, 192, 0.6);
+            color: #ffff00;
+            text-shadow: 0 0 10px #ffff00;
         }
 
         .nav-links a::after {
             content: '';
             position: absolute;
-            bottom: -8px;
+            bottom: -5px;
             left: 0;
             width: 0;
             height: 2px;
-            background: linear-gradient(90deg, #c0c0c0, #a9a9a9);
+            background: #00ff00;
             transition: width 0.3s ease;
-            box-shadow: 0 0 5px rgba(192, 192, 192, 0.5);
         }
 
         .nav-links a:hover::after {
             width: 100%;
         }
 
-        /* Hero Section */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: #e0e0e0;
-            position: relative;
-            overflow: hidden;
+        .back-to-game {
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'VT323', monospace;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
         }
 
-        .hero::before {
+        .back-to-game:hover {
+            background: rgba(0, 255, 0, 0.2);
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        .content-section {
+            padding: 120px 50px 50px 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 3rem;
+            color: #00ff00;
+            text-shadow: 0 0 15px #00ff00;
+            margin-bottom: 50px;
+            text-align: center;
+            letter-spacing: 3px;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 50px;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        .profile-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .profile-display {
+            width: 300px;
+            height: 300px;
+            background: #000;
+            border: 4px solid #00ff00;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 8rem;
+            color: #00ff00;
+            text-shadow: 0 0 20px #00ff00;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 0 20px #00ff00,
+                inset 0 0 20px rgba(0, 255, 0, 0.1);
+        }
+
+        .profile-display::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                linear-gradient(45deg, transparent 30%, rgba(192, 192, 192, 0.05) 50%, transparent 70%),
-                linear-gradient(-45deg, transparent 30%, rgba(169, 169, 169, 0.03) 50%, transparent 70%);
-            animation: shimmer 8s ease-in-out infinite;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 255, 0, 0.03) 2px,
+                rgba(0, 255, 0, 0.03) 4px
+            );
+            animation: scan 2s linear infinite;
         }
 
-        @keyframes shimmer {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.7; }
+        @keyframes scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
         }
 
-        .hero-content {
-            z-index: 2;
-            max-width: 800px;
-            animation: fadeInUp 1.2s ease;
+        .about-text {
+            font-family: 'VT323', monospace;
+            font-size: 1.5rem;
+            line-height: 1.8;
+            color: #00ff00;
+            text-shadow: 0 0 5px #00ff00;
         }
 
-        .hero h1 {
-            font-size: 4rem;
-            margin-bottom: 1.5rem;
-            font-weight: 700;
-            color: #c0c0c0;
-            text-shadow: 0 0 20px rgba(192, 192, 192, 0.4);
-            letter-spacing: 2px;
+        .about-text p {
+            margin-bottom: 20px;
+            border-left: 3px solid #00ff00;
+            padding-left: 20px;
+            background: rgba(0, 255, 0, 0.05);
+            padding: 15px 20px;
+            border-radius: 5px;
+            margin-bottom: 15px;
         }
 
-        .hero p {
-            font-size: 1.4rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-            font-style: italic;
+        .retro-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
         }
 
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .social-btn {
-            background: linear-gradient(135deg, rgba(192, 192, 192, 0.1), rgba(128, 128, 128, 0.2));
-            color: #e0e0e0;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1.1rem;
-            transition: all 0.4s ease;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(192, 192, 192, 0.3);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .social-btn:hover {
-            background: linear-gradient(135deg, rgba(192, 192, 192, 0.2), rgba(169, 169, 169, 0.3));
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(192, 192, 192, 0.2);
-            color: #c0c0c0;
-            text-shadow: 0 0 8px rgba(192, 192, 192, 0.4);
-        }
-
-        /* Sections */
-        .section {
-            padding: 6rem 0;
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(26, 26, 26, 0.9));
-            margin: 3rem 0;
-            border-radius: 25px;
-            box-shadow: 
-                0 15px 50px rgba(0, 0, 0, 0.5),
-                inset 0 1px 0 rgba(192, 192, 192, 0.1);
-            border: 1px solid rgba(192, 192, 192, 0.1);
-            animation: fadeIn 0.8s ease;
+        .retro-card {
+            background: #000;
+            border: 3px solid #00ff00;
+            border-radius: 15px;
+            padding: 30px;
             position: relative;
             overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 0 15px rgba(0, 255, 0, 0.3),
+                inset 0 0 15px rgba(0, 255, 0, 0.05);
         }
 
-        .section::before {
+        .retro-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 
+                0 0 25px rgba(0, 255, 0, 0.5),
+                inset 0 0 25px rgba(0, 255, 0, 0.1);
+        }
+
+        .retro-card::before {
             content: '';
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(192, 192, 192, 0.05), transparent);
-            animation: slideLight 3s ease-in-out infinite;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 0, 0.1), transparent);
+            transition: left 0.5s ease;
         }
 
-        @keyframes slideLight {
-            0% { left: -100%; }
-            100% { left: 100%; }
+        .retro-card:hover::before {
+            left: 100%;
         }
 
-        .section-title {
-            text-align: center;
-            font-size: 3rem;
-            margin-bottom: 4rem;
-            color: #c0c0c0;
-            position: relative;
+        .card-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.5rem;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+            margin-bottom: 15px;
             font-weight: 700;
-            text-shadow: 0 0 15px rgba(192, 192, 192, 0.3);
-            letter-spacing: 1px;
         }
 
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(90deg, #a9a9a9, #c0c0c0, #a9a9a9);
-            border-radius: 2px;
-            box-shadow: 0 0 10px rgba(192, 192, 192, 0.4);
-        }
-
-        /* Introduction */
-        .intro-content {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 4rem;
-            align-items: center;
-            position: relative;
-            z-index: 2;
-        }
-
-        .profile-img {
-            width: 280px;
-            height: 280px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 5rem;
-            color: #c0c0c0;
-            margin: 0 auto;
-            box-shadow: 
-                0 15px 40px rgba(0, 0, 0, 0.6),
-                inset 0 1px 0 rgba(192, 192, 192, 0.2);
-            border: 2px solid rgba(192, 192, 192, 0.3);
-        }
-
-        .intro-text {
+        .card-content {
+            font-family: 'VT323', monospace;
             font-size: 1.2rem;
-            line-height: 1.9;
-            color: #d0d0d0;
-            position: relative;
-            z-index: 2;
+            color: #00ff00;
+            line-height: 1.6;
+            margin-bottom: 15px;
         }
 
-        /* Cards */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2.5rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .card {
-            background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(42, 42, 42, 0.8));
-            padding: 2.5rem;
-            border-radius: 20px;
-            box-shadow: 
-                0 10px 30px rgba(0, 0, 0, 0.4),
-                inset 0 1px 0 rgba(192, 192, 192, 0.1);
-            transition: all 0.4s ease;
-            border: 1px solid rgba(192, 192, 192, 0.2);
+        .card-link {
+            display: inline-block;
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-family: 'VT323', monospace;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
 
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(192, 192, 192, 0.05), transparent);
-            opacity: 0;
-            transition: opacity 0.4s ease;
+        .card-link:hover {
+            background: rgba(0, 255, 0, 0.2);
+            box-shadow: 0 0 10px #00ff00;
         }
 
-        .card:hover::before {
-            opacity: 1;
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 50px;
+            flex-wrap: wrap;
         }
 
-        .card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 
-                0 20px 50px rgba(0, 0, 0, 0.6),
-                0 0 30px rgba(192, 192, 192, 0.1);
-            border-color: rgba(192, 192, 192, 0.4);
-        }
-
-        .card h3 {
-            color: #c0c0c0;
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
-            font-weight: 700;
-            text-shadow: 0 0 8px rgba(192, 192, 192, 0.3);
-        }
-
-        .card p {
-            color: #b0b0b0;
-            margin-bottom: 1.2rem;
-            font-size: 1.1rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .card-link {
-            color: #c0c0c0;
+        .social-btn {
+            background: rgba(0, 255, 0, 0.1);
+            border: 3px solid #00ff00;
+            color: #00ff00;
+            padding: 15px 30px;
             text-decoration: none;
-            font-weight: 600;
-            font-size: 1.1rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.8rem;
+            border-radius: 10px;
+            font-family: 'VT323', monospace;
+            font-size: 1.3rem;
             transition: all 0.3s ease;
             position: relative;
-            z-index: 2;
+            overflow: hidden;
+            text-shadow: 0 0 5px #00ff00;
         }
 
-        .card-link:hover {
-            gap: 1.2rem;
-            color: #d0d0d0;
-            text-shadow: 0 0 8px rgba(192, 192, 192, 0.4);
+        .social-btn:hover {
+            background: rgba(0, 255, 0, 0.2);
+            box-shadow: 0 0 20px #00ff00;
+            transform: translateY(-3px);
         }
 
-        /* Papers */
+        .paper-list {
+            margin-top: 50px;
+        }
+
         .paper-item {
-            background: linear-gradient(135deg, rgba(26, 26, 26, 0.95), rgba(42, 42, 42, 0.9));
-            padding: 2rem;
-            border-radius: 15px;
-            margin-bottom: 2rem;
-            box-shadow: 
-                0 8px 25px rgba(0, 0, 0, 0.4),
-                inset 0 1px 0 rgba(192, 192, 192, 0.1);
-            border-left: 4px solid #c0c0c0;
-            border: 1px solid rgba(192, 192, 192, 0.15);
-            transition: all 0.4s ease;
+            background: #000;
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
             position: relative;
-            z-index: 2;
+            transition: all 0.3s ease;
+            border-left: 5px solid #00ff00;
         }
 
         .paper-item:hover {
-            transform: translateX(8px);
-            box-shadow: 
-                0 12px 35px rgba(0, 0, 0, 0.5),
-                0 0 20px rgba(192, 192, 192, 0.1);
-            border-left-color: #d0d0d0;
+            transform: translateX(10px);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
         }
 
         .paper-title {
-            font-size: 1.4rem;
+            font-family: 'Orbitron', monospace;
+            font-size: 1.3rem;
+            color: #00ff00;
+            text-shadow: 0 0 5px #00ff00;
+            margin-bottom: 10px;
             font-weight: 700;
-            color: #c0c0c0;
-            margin-bottom: 0.8rem;
-            text-shadow: 0 0 5px rgba(192, 192, 192, 0.2);
         }
 
         .paper-authors {
-            color: #a0a0a0;
-            font-style: italic;
-            margin-bottom: 0.8rem;
+            font-family: 'VT323', monospace;
             font-size: 1.1rem;
+            color: #888;
+            margin-bottom: 8px;
         }
 
         .paper-venue {
-            color: #b0b0b0;
-            font-weight: 600;
-            margin-bottom: 1.2rem;
+            font-family: 'VT323', monospace;
             font-size: 1.1rem;
+            color: #00ff00;
+            margin-bottom: 15px;
         }
 
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Terminal-style section */
+        .terminal-section {
+            background: #000;
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 50px;
+            font-family: 'VT323', monospace;
+            position: relative;
+            overflow: hidden;
         }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(60px); }
-            to { opacity: 1; transform: translateY(0); }
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #00ff00;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
         }
 
-        /* Responsive */
+        .terminal-title {
+            color: #00ff00;
+            font-size: 1.2rem;
+            text-shadow: 0 0 5px #00ff00;
+        }
+
+        .terminal-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .terminal-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ff5555;
+        }
+
+        .terminal-btn:nth-child(2) {
+            background: #ffff55;
+        }
+
+        .terminal-btn:nth-child(3) {
+            background: #55ff55;
+        }
+
+        .terminal-content {
+            color: #00ff00;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .terminal-prompt {
+            color: #ffff00;
+        }
+
+        .terminal-output {
+            margin-left: 20px;
+            margin-bottom: 10px;
+        }
+
+        .typing-animation {
+            border-right: 2px solid #00ff00;
+            animation: typing 3s steps(40, end) infinite;
+        }
+
+        @keyframes typing {
+            0% { border-right-color: #00ff00; }
+            50% { border-right-color: transparent; }
+            100% { border-right-color: #00ff00; }
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .hero h1 { font-size: 2.8rem; }
-            .hero p { font-size: 1.2rem; }
-            .nav-links { display: none; }
-            .intro-content {
+            .basketball-court {
+                width: 90%;
+                height: 400px;
+            }
+            
+            .about-grid {
                 grid-template-columns: 1fr;
                 text-align: center;
             }
+            
+            .retro-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-bar {
+                padding: 0 20px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .content-section {
+                padding: 120px 20px 50px 20px;
+            }
+
             .social-links {
-                flex-wrap: wrap;
-                gap: 1.5rem;
+                flex-direction: column;
+                align-items: center;
             }
         }
 
-        /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
+        /* Glitch Effect */
+        .glitch {
+            animation: glitch 0.5s infinite;
         }
 
-        /* Interactive floating elements */
-        .floating-shapes {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
         }
 
-        .shape {
-            position: absolute;
-            background: linear-gradient(135deg, rgba(192, 192, 192, 0.1), rgba(169, 169, 169, 0.05));
-            border-radius: 50%;
-            animation: float 8s ease-in-out infinite;
-            box-shadow: 0 0 20px rgba(192, 192, 192, 0.1);
+        /* Easter egg: Konami code style */
+        .konami-activated {
+            animation: rainbow 2s linear infinite;
         }
 
-        .shape:nth-child(1) {
-            width: 100px;
-            height: 100px;
-            top: 15%;
-            left: 8%;
-            animation-delay: 0s;
+        @keyframes rainbow {
+            0% { color: #ff0000; }
+            16.66% { color: #ff9900; }
+            33.33% { color: #ffff00; }
+            50% { color: #00ff00; }
+            66.66% { color: #0099ff; }
+            83.33% { color: #9900ff; }
+            100% { color: #ff0000; }
         }
+        /* Basketball Physics & Analytics */
+.shot-trajectory {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #ff6600;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #ff6600;
+    pointer-events: none;
+    z-index: 100;
+}
 
-        .shape:nth-child(2) {
-            width: 140px;
-            height: 140px;
-            top: 65%;
-            right: 8%;
-            animation-delay: 2.5s;
-        }
+.basketball-hoop {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+    width: 60px;
+    height: 30px;
+    border: 4px solid #ff6600;
+    border-radius: 50%;
+    background: transparent;
+    transform: perspective(100px) rotateX(60deg);
+    box-shadow: 0 0 15px #ff6600;
+}
 
-        .shape:nth-child(3) {
-            width: 80px;
-            height: 80px;
-            top: 45%;
-            left: 85%;
-            animation-delay: 5s;
-        }
+.basketball-hoop::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 10%;
+    width: 80%;
+    height: 40px;
+    background: linear-gradient(to bottom, #ff6600, transparent);
+    border-radius: 0 0 20px 20px;
+}
 
-        @keyframes float {
-            0%, 100% { 
-                transform: translateY(0px) rotate(0deg);
-                opacity: 0.3;
-            }
-            50% { 
-                transform: translateY(-30px) rotate(180deg);
-                opacity: 0.7;
-            }
-        }
+.shot-clock {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-family: 'Orbitron', monospace;
+    font-size: 2rem;
+    color: #ff0000;
+    text-shadow: 0 0 10px #ff0000;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 2px solid #ff0000;
+}
 
-        /* Additional modern touches */
-        .section:nth-child(even) {
-            background: linear-gradient(135deg, rgba(10, 10, 10, 0.9), rgba(30, 30, 30, 0.8));
-        }
+.dribble-game {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 255, 0, 0.1);
+    border: 2px solid #00ff00;
+    padding: 15px;
+    border-radius: 10px;
+    font-family: 'VT323', monospace;
+    color: #00ff00;
+}
 
-        /* Scrollbar styling */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
+.dribble-beat {
+    width: 100px;
+    height: 20px;
+    background: #000;
+    border: 2px solid #00ff00;
+    border-radius: 10px;
+    position: relative;
+    margin: 10px 0;
+    overflow: hidden;
+}
 
-        ::-webkit-scrollbar-track {
-            background: #1a1a1a;
-        }
+.beat-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 4px;
+    background: #00ff00;
+    box-shadow: 0 0 10px #00ff00;
+    animation: beat-move 2s linear infinite;
+}
 
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #a9a9a9, #c0c0c0);
-            border-radius: 4px;
-        }
+@keyframes beat-move {
+    0% { left: 0; }
+    100% { left: 100%; }
+}
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, #c0c0c0, #d0d0d0);
-        }
+.analytics-dashboard {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    width: 300px;
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid #00ff00;
+    border-radius: 10px;
+    padding: 20px;
+    font-family: 'VT323', monospace;
+    color: #00ff00;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+}
+
+.analytics-dashboard.active {
+    transform: translateX(0);
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+    padding: 5px 0;
+    border-bottom: 1px solid #00ff00;
+}
+
+.heat-map {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.heat-point {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle, rgba(255, 0, 0, 0.6), transparent);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: heat-fade 2s ease-out forwards;
+}
+
+@keyframes heat-fade {
+    0% { opacity: 1; transform: scale(0.5); }
+    100% { opacity: 0; transform: scale(2); }
+}
+
+.leaderboard {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid #00ff00;
+    border-radius: 10px;
+    padding: 15px;
+    font-family: 'VT323', monospace;
+    color: #00ff00;
+    min-width: 200px;
+}
+
+.leaderboard-entry {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+    padding: 5px;
+    background: rgba(0, 255, 0, 0.1);
+    border-radius: 5px;
+}
+
+.tournament-bracket {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.95);
+    border: 3px solid #00ff00;
+    border-radius: 15px;
+    padding: 30px;
+    display: none;
+    z-index: 2000;
+}
+
+.tournament-bracket.active {
+    display: block;
+}
+
+.bracket-round {
+    display: flex;
+    flex-direction: column;
+    margin: 0 20px;
+}
+
+.bracket-match {
+    background: rgba(0, 255, 0, 0.1);
+    border: 2px solid #00ff00;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'VT323', monospace;
+    color: #00ff00;
+}
+
+.bracket-match:hover {
+    background: rgba(0, 255, 0, 0.2);
+    transform: scale(1.05);
+}
+
+.three-d-court {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.trajectory-line {
+    position: absolute;
+    height: 2px;
+    background: linear-gradient(90deg, #ff6600, transparent);
+    pointer-events: none;
+    opacity: 0.7;
+    z-index: 50;
+}
+
     </style>
 </head>
 <body>
-    <header>
-        <nav class="container">
-            <div class="logo">Anant Chebiam</div>
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#honors">Honors</a></li>
-                <li><a href="#papers">Papers</a></li>
-            </ul>
-        </nav>
-    </header>
+    <div class="crt-overlay"></div>
+    
+    <!-- Boot Screen -->
+    <div class="boot-screen">
+        <div class="boot-text">
+            ANANT CHEBIAM OS v2.0<br>
+            INITIALIZING BASKETBALL PROTOCOL...<br>
+            LOADING PORTFOLIO DATA...
+        </div>
+        <div class="loading-bar">
+            <div class="loading-fill"></div>
+        </div>
+    </div>
 
-    <main>
-        <!-- Hero Section -->
-        <section id="home" class="hero">
-            <div class="floating-shapes">
-                <div class="shape"></div>
-                <div class="shape"></div>
-                <div class="shape"></div>
+    <!-- Main Game Screen -->
+    <div class="game-container">
+        <div class="basketball-court">
+            <div class="court-lines">
+                <div class="center-circle"></div>
+                <div class="three-point-line"></div>
             </div>
-            <div class="hero-content">
-                <h1>Anant Chebiam</h1>
-                <p>Student • Researcher • Hooper</p>
-                <p>Passionate about advancing the frontiers of knowledge and life</p>
-                
-                <div class="social-links">
-                    <a href="https://docs.google.com/document/d/1LOrZ4wR8z6IECIGFBDS3bL6SI-XvBZGpEra3qfrzr8U/edit?usp=sharing" class="social-btn">Resume</a>
-                    <a href="https://docs.google.com/document/d/1Dt2tOTUUhUW0Twar9HWikLbXMuzDf9nSFqaIQiU9fBM/edit?usp=sharing" class="social-btn">CV</a>
-                    <a href="https://www.linkedin.com/in/anant-chebiam/" class="social-btn">LinkedIn</a>
-                    <a href="mailto:lifewithcredit1@gmail.com" class="social-btn">Email</a>
+            <div class="score-display">ANANT CHEBIAM</div>
+            <div class="basketball">🏀</div>
+            <div class="basketball-player" id="player">⛹🏿‍♂️</div>
+            <div class="press-start" id="startBtn">PRESS START TO ENTER</div>
+            <div class="game-ui">
+                <div class="ui-element" data-section="about">RESEARCHER</div>
+                <div class="ui-element" data-section="honors">STUDENT</div>
+                <div class="ui-element" data-section="papers">HOOPER</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portfolio Content -->
+    <div class="portfolio-content" id="portfolioContent">
+        <nav class="nav-bar">
+            <div class="nav-logo">ANANT.EXE</div>
+            <ul class="nav-links">
+                <li><a href="#about">ABOUT</a></li>
+                <li><a href="#honors">HONORS</a></li>
+                <li><a href="#papers">PAPERS</a></li>
+                <li><a href="#terminal">TERMINAL</a></li>
+            </ul>
+            <button class="back-to-game" id="backToGame">BACK TO GAME</button>
+        </nav>
+
+        <!-- About Section -->
+        <section id="about" class="content-section">
+            <h2 class="section-title">ABOUT_ME.EXE</h2>
+            <div class="about-grid">
+                <div class="profile-container">
+                    <div class="profile-display">⛹🏿‍♂️</div>
+                </div>
+                <div class="about-text">
+                    <p>WELCOME TO MY DIGITAL DOMAIN! I'M A DEDICATED RESEARCHER AND STUDENT WITH A PASSION FOR MATHEMATICS, PHYSICS, CHEMISTRY, AND SURGERY.</p>
+                    <p>WITH EXTENSIVE EXPERIENCE IN BOTH THEORETICAL AND APPLICABLE RESEARCH, I STRIVE TO BRIDGE THE GAP BETWEEN WHAT IS AND WHAT ISN'T POSSIBLE IN THE WORLD OF NATURAL AND MATHEMATICAL SCIENCE.</p>
+                    <p>WHEN I'M NOT IMMERSED IN RESEARCH OR LEARNING, YOU CAN FIND ME PLAYING BASKETBALL, HOOPING, OR PLAYING MORE BASKETBALL.</p>
+                </div>
+            </div>
+            
+            <div class="social-links">
+                <a href="https://docs.google.com/document/d/1LOrZ4wR8z6IECIGFBDS3bL6SI-XvBZGpEra3qfrzr8U/edit?usp=sharing" class="social-btn">RESUME.DOC</a>
+                <a href="https://docs.google.com/document/d/1Dt2tOTUUhUW0Twar9HWikLbXMuzDf9nSFqaIQiU9fBM/edit?usp=sharing" class="social-btn">CV.DOC</a>
+                <a href="https://www.linkedin.com/in/anant-chebiam/" class="social-btn">LINKEDIN.NET</a>
+                <a href="mailto:lifewithcredit1@gmail.com" class="social-btn">EMAIL.SYS</a>
+            </div>
+        </section>
+
+        <!-- Honors Section -->
+        <section id="honors" class="content-section">
+            <h2 class="section-title">HONORS_AND_AWARDS.DAT</h2>
+            <div class="retro-cards">
+                <div class="retro-card">
+                    <div class="card-title">PATRIOT'S PEN ESSAY CONTEST</div>
+                    <div class="card-content">
+                        <strong>2024</strong> - VOICE OF DEMOCRACY<br>
+                        RECOGNIZED FOR 4TH PLACE IN NW REGION ESSAY ABOUT PATRIOTISM AND WHAT AMERICA MEANS TO ME.
+                    </div>
+                </div>
+                <div class="retro-card">
+                    <div class="card-title">100+ DOWNLOADS ON RIEMANN HYPOTHESIS</div>
+                    <div class="card-content">
+                        <strong>2025</strong> - PREPRINT.ORG<br>
+                        AWARDED FOR 100+ DOWNLOADS ON RESEARCH PAPER ABOUT RIEMANN HYPOTHESIS VERIFICATION.
+                    </div>
+                </div>
+                <div class="retro-card">
+                    <div class="card-title">USAPHO AND AIME QUALIFIER</div>
+                    <div class="card-content">
+                        <strong>2025</strong> - MAA AND PAA<br>
+                        QUALIFIED PAST OPEN ROUNDS OF UNITED STATES MATH AND PHYSICS OLYMPIAD.
+                    </div>
+                </div>
+                <div class="retro-card">
+                    <div class="card-title">HCSSIM ACCEPTEE</div>
+                    <div class="card-content">
+                        <strong>2025</strong> - NEW HAMPSHIRE<br>
+                        ACCEPTED TO PRESTIGIOUS MATH PROGRAM. 1 OF 51 ACCEPTED.
+                    </div>
+                </div>
+                <div class="retro-card">
+                    <div class="card-title">ROSS MATHEMATICS PROGRAM</div>
+                    <div class="card-content">
+                        <strong>2025</strong> - ROSS MATHEMATICS PROGRAM<br>
+                        ACCEPTED TO PRESTIGIOUS PROGRAM. TOP 3 MATH PROGRAM IN THE WORLD.
+                    </div>
                 </div>
             </div>
         </section>
 
-        <div class="container">
-            <!-- Introduction Section -->
-            <section id="about" class="section">
-                <h2 class="section-title">About Me</h2>
-                <div class="intro-content">
-                    <div class="profile-img">⛹🏿‍♂️</div>
-                    <div class="intro-text">
-                        <p>Welcome to my portfolio! I'm a dedicated researcher and student with a passion for mathematics, physics, chemistry, and Surgery.</p>
-                        
-                        <p>With extensive experience in both theoretical and applicable research, I strive to bridge the gap between what is and what isn't possible in the world of natural and mathematical science.</p>
-
-                        <p>When I'm not immersed in research or learning, you can find me playing basketball, hooping, or playing more basketball.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Honors and Awards Section -->
-            <section id="honors" class="section">
-                <h2 class="section-title">Honors & Awards</h2>
-                <div class="cards-grid">
-                    <div class="card">
-                        <h3>Patriot's Pen Essay Contest Award</h3>
-                        <p><strong>2024</strong> - Voice of Democracy</p>
-                        <p>Recognized for 4th place in NW region essay about patriotism and what America means to me.</p>
-                    </div>
-                    <div class="card">
-                        <h3>100+ Downloads On Riemann Hypothesis Paper</h3>
-                        <p><strong>2025</strong> - Preprint.org</p>
-                        <p>Awarded for 100+ downloads on research paper called "A Computational Approach for Riemann Hypothesis Verification Novel Algorithms for Zero Distribution Analysis"</p>
-                    </div>
-                    <div class="card">
-                        <h3>USApHO and AIME Qualifier</h3>
-                        <p><strong>2025</strong> - MAA and PAA</p>
-                        <p>Qualified Past Open Rounds of United States Math and Physics Olympiad, respectively.</p>
-                    </div>
-                    <div class="card">
-                        <h3>HCSSiM Acceptee</h3>
-                        <p><strong>2025</strong> - New Hampshire</p>
-                        <p>Accepted to Prestigious Math Program in New Hampshire. 1 of 51 Accepted</p>
-                    </div>
-                    <div class="card">
-                        <h3>Ross Mathematics Program Acceptee</h3>
-                        <p><strong>2025</strong> - Ross Mathematics Program</p>
-                        <p>Accepted to prestigious Ross Mathematics Program. Considered top 3 program in the world for math.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Recent Papers Section -->
-            <section id="papers" class="section">
-                <h2 class="section-title">Selected Publications</h2>
-                
+        <!-- Papers Section -->
+        <section id="papers" class="content-section">
+            <h2 class="section-title">SELECTED_RESEARCH_PAPERS.DB</h2>
+            <div class="paper-list">
                 <div class="paper-item">
-                    <div class="paper-title">A Computational Approach for Riemann Hypothesis Verification Novel Algorithms for Zero Distribution Analysis</div>
-                    <div class="paper-authors">Anant Chebiam</div>
-                    <div class="paper-venue">Preprint.org</div>
-                    <a href="https://doi.org/10.20944/preprints202504.1587.v1" class="card-link">Read Paper →</a>
+                    <div class="paper-title">A COMPUTATIONAL APPROACH FOR RIEMANN HYPOTHESIS VERIFICATION</div>
+                    <div class="paper-authors">ANANT CHEBIAM</div>
+                    <div class="paper-venue">PREPRINT.ORG</div>
+                    <a href="https://doi.org/10.20944/preprints202504.1587.v1" class="card-link">READ_PAPER.EXE</a>
                 </div>
 
                 <div class="paper-item">
-                    <div class="paper-title">The Chebiam Continuum Axiom: A Resolution to the Continuum Hypothesis Through Computational Forcing and Large Cardinals</div>
-                    <div class="paper-authors">Anant Chebiam</div>
-                    <div class="paper-venue">Preprint.org</div>
-                    <a href="https://doi.org/10.20944/preprints202504.0726.v1" class="card-link">Read Paper →</a>
+                    <div class="paper-title">THE CHEBIAM CONTINUUM AXIOM</div>
+                    <div class="paper-authors">ANANT CHEBIAM</div>
+                    <div class="paper-venue">PREPRINT.ORG</div>
+                    <a href="https://doi.org/10.20944/preprints202504.0726.v1" class="card-link">READ_PAPER.EXE</a>
                 </div>
 
                 <div class="paper-item">
-                    <div class="paper-title">Advancements in the Navier-Stokes Existence and Smoothness Problem with a Novel Framework and Turbulence Regularity Criterion</div>
-                    <div class="paper-authors">Anant Chebiam</div>
-                    <div class="paper-venue">Preprint.org</div>
-                    <a href="https://doi.org/10.20944/preprints202504.0770.v1" class="card-link">Read Paper →</a>
+                    <div class="paper-title">PROJECTIVE-DIFFERENTIAL GEOMETRIC SYNTHESIS WITH ELEMENTS OF ALGEBRAIC GEOMETRY</div>
+                    <div class="paper-authors">ANANT CHEBIAM</div>
+                    <div class="paper-venue">PREPRINT.ORG</div>
+                    <a href="https://doi.org/10.20944/preprints202506.1712.v2" class="card-link">READ_PAPER.EXE</a>
                 </div>
 
                 <div class="paper-item">
-                    <div class="paper-title">A Unified Framework for Fractal Geometry, Abstract Algebraic Structures, and Functional Analysis: Exploring Self-Similarity Through Measure Theory and Operator Algebras</div>
-                    <div class="paper-authors">Anant Chebiam</div>
-                    <div class="paper-venue">Preprint.org</div>
-                    <a href="https://doi.org/10.20944/preprints202503.2406.v1" class="card-link">Read Paper →</a>
+                    <div class="paper-title">ADVANCEMENTS IN NAVIER-STOKES EXISTENCE AND SMOOTHNESS</div>
+                    <div class="paper-authors">ANANT CHEBIAM</div>
+                    <div class="paper-venue">PREPRINT.ORG</div>
+                    <a href="https://doi.org/10.20944/preprints202504.0770.v1" class="card-link">READ_PAPER.EXE</a>
                 </div>
 
                 <div class="paper-item">
-                    <div class="paper-title">Exploring Chaotic Dynamics and Nonlinear Feedback Systems in Tumor-Immune Interactions: A Mathematical Framework for Understanding Complex Oncological Ecosystems</div>
-                    <div class="paper-authors">Anant Chebiam</div>
-                    <div class="paper-venue">Preprint.org</div>
-                    <a href="https://doi.org/10.20944/preprints202506.1609.v1" class="card-link">Read Paper →</a>
+                    <div class="paper-title">A UNIFIED FRAMEWORK FOR FRACTALS, ABSTRACT ALGEBRA, AND FUNCTIONAL ANALYSIS</div>
+                    <div class="paper-authors">ANANT CHEBIAM</div>
+                    <div class="paper-venue">PREPRINT.ORG</div>
+                    <a href="https://doi.org/10.20944/preprints202503.2406.v1" class="card-link">READ_PAPER.EXE</a>
                 </div>
-            </section>
-        </div>
-    </main>
+            </div>
+        </section>
+
+        <!-- Terminal Section -->
+        <section id="terminal" class="content-section">
+            <h2 class="section-title">TERMINAL_ACCESS.SYS</h2>
+            <div class="terminal-section">
+                <div class="terminal-header">
+                    <div class="terminal-title">ANANT@LOCALHOST:~$</div>
+                    <div class="terminal-controls">
+                        <div class="terminal-btn"></div>
+                        <div class="terminal-btn"></div>
+                        <div class="terminal-btn"></div>
+                    </div>
+                </div>
+                <div class="terminal-content">
+                    <div class="terminal-prompt">$ whoami</div>
+                    <div class="terminal-output">anant_chebiam</div>
+                    
+                    <div class="terminal-prompt">$ cat skills.txt</div>
+                    <div class="terminal-output">
+                        MATHEMATICS: Advanced Calculus, Linear Algebra, Number Theory, Topology, Etc.<br>
+                        PHYSICS: Quantum Mechanics, Thermodynamics, Computational Physics, Etc.<br>
+                        CHEMISTRY: Organic Chemistry, Biochemistry, Physical Chemistry, Etc.<br>
+                        SURGERY: Theoretical Applications, Medical Modeling, Etc.<br>
+                        SPORTS: Basketball (Primary), Cross-Country, Cricket
+                    </div>
+                    
+                    <div class="terminal-prompt">$ ls current_projects/</div>
+                    <div class="terminal-output">
+                        p-groups_and_algebraic_topology.py<br>
+                       statistical_analysis_or_arthmetic_functions.m<br>
+                        extenstion_of_Erdos-Kac_Theorem.cpp<br>
+                        gelfond-schneider_generalizations.py<br>
+                        secret_projects!.js
+                    </div>
+                    
+                    <div class="terminal-prompt">$ echo $MOTTO</div>
+                    <div class="terminal-output">"BRIDGING THE GAP BETWEEN THEORY AND PRACTICE, ONE EQUATION AT A TIME"</div>
+                    
+                    <div class="terminal-prompt">$ basketball_stats --recent</div>
+                    <div class="terminal-output">
+                        GAMES_PLAYED: 247<br>
+                        AVERAGE_SCORE: 20 PPG<br>
+                        FIELD_GOAL_PERCENTAGE: 0.947<br>
+                        THREE_POINT_PERCENTAGE: 0.654<br>
+                        STATUS: HOOPING_INTENSIFIES
+                    </div>
+                    
+                    <div class="terminal-prompt">$ <span class="typing-animation">█</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="content-section">
+            <h2 class="section-title">CONTACT_PROTOCOL.NET</h2>
+            <div class="retro-cards">
+                <div class="retro-card">
+                    <div class="card-title">COLLABORATION REQUESTS</div>
+                    <div class="card-content">
+                        INTERESTED IN RESEARCH COLLABORATION? MATHEMATICAL DISCUSSIONS? OR MAYBE A PICKUP BASKETBALL GAME?
+                    </div>
+                    <a href="mailto:lifewithcredit1@gmail.com" class="card-link">INITIATE_CONTACT.EXE</a>
+                </div>
+                <div class="retro-card">
+                    <div class="card-title">ACADEMIC INQUIRIES</div>
+                    <div class="card-content">
+                        QUESTIONS ABOUT MY RESEARCH OR ACADEMIC BACKGROUND? REACH OUT FOR DETAILED DISCUSSIONS.
+                    </div>
+                    <a href="mailto:lifewithcredit1@gmail.com" class="card-link">SEND_INQUIRY.EXE</a>
+                </div>
+                <div class="retro-card">
+                    <div class="card-title">BASKETBALL CHALLENGES</div>
+                    <div class="card-content">
+                        THINK YOU CAN OUTSHOOT ME? CHALLENGE ACCEPTED. LET'S TALK HOOPS AND MATHEMATICS.
+                    </div>
+                    <a href="mailto:lifewithcredit1@gmail.com" class="card-link">CHALLENGE_ACCEPTED.EXE</a>
+                </div>
+            </div>
+        </section>
+    </div>
 
     <script>
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
+        // Boot sequence
+        setTimeout(() => {
+            document.querySelector('.boot-screen').classList.add('fade-out');
+            setTimeout(() => {
+                document.querySelector('.game-container').classList.add('active');
+            }, 1000);
+        }, 3500);
 
-        // Enhanced scroll effect for header
-        window.addEventListener('scroll', () => {
-            const header = document.querySelector('header');
-            if (window.scrollY > 100) {
-                header.style.background = 'rgba(0, 0, 0, 0.98)';
-                header.style.boxShadow = '0 4px 40px rgba(0, 0, 0, 0.9)';
-            } else {
-                header.style.background = 'rgba(0, 0, 0, 0.95)';
-                header.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.8)';
+        // Game interactions
+        let score = 0;
+        let clicks = 0;
+        const player = document.getElementById('player');
+        const basketball = document.querySelector('.basketball');
+        const scoreDisplay = document.querySelector('.score-display');
+        const startBtn = document.getElementById('startBtn');
+        const portfolioContent = document.getElementById('portfolioContent');
+        const backToGame = document.getElementById('backToGame');
+
+        // Basketball click interaction
+        basketball.addEventListener('click', () => {
+            clicks++;
+            score += 10;
+            basketball.style.transform = 'translate(-50%, -50%) scale(1.3) rotate(720deg)';
+            setTimeout(() => {
+                basketball.style.transform = 'translate(-50%, -50%) scale(1) rotate(0deg)';
+            }, 300);
+            
+            // Easter egg: After 10 clicks, activate special mode
+            if (clicks === 10) {
+                document.body.classList.add('konami-activated');
+                setTimeout(() => {
+                    document.body.classList.remove('konami-activated');
+                }, 3000);
             }
         });
 
-        // Enhanced animation observer
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
-        };
+        // Player click interaction
+        player.addEventListener('click', () => {
+            player.classList.add('glitch');
+            setTimeout(() => {
+                player.classList.remove('glitch');
+            }, 500);
+        });
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
+        // Start button - Enter portfolio
+        startBtn.addEventListener('click', () => {
+            portfolioContent.classList.add('active');
+        });
+
+        // UI element interactions
+        document.querySelectorAll('.ui-element').forEach(element => {
+            element.addEventListener('click', () => {
+                portfolioContent.classList.add('active');
+                setTimeout(() => {
+                    const section = element.getAttribute('data-section');
+                    document.getElementById(section).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }, 800);
+            });
+        });
+
+        // Back to game button
+        backToGame.addEventListener('click', () => {
+            portfolioContent.classList.remove('active');
+        });
+
+        // Smooth scrolling for nav links
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                document.getElementById(targetId).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Konami code easter egg
+        const konamiCode = [
+            'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
+            'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
+            'KeyB', 'KeyA'
+        ];
+        let konamiIndex = 0;
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === konamiCode[konamiIndex]) {
+                konamiIndex++;
+                if (konamiIndex === konamiCode.length) {
+                    // Activate special basketball mode
+                    document.body.classList.add('konami-activated');
+                    basketball.style.animation = 'spin 0.1s linear infinite';
+                    setTimeout(() => {
+                        document.body.classList.remove('konami-activated');
+                        basketball.style.animation = 'spin 3s linear infinite';
+                    }, 5000);
+                    konamiIndex = 0;
                 }
-            });
-        }, observerOptions);
-
-        // Observe all sections and cards
-        document.querySelectorAll('.section, .card, .paper-item').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(40px)';
-            el.style.transition = 'all 0.8s ease';
-            observer.observe(el);
+            } else {
+                konamiIndex = 0;
+            }
         });
 
-        // Enhanced interactive hover effects
-        document.querySelectorAll('.card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-10px) scale(1.03)';
+        // Random court animations
+        setInterval(() => {
+            const court = document.querySelector('.basketball-court');
+            court.style.boxShadow = `
+                0 0 ${Math.random() * 30 + 20}px #00ff00,
+                inset 0 0 20px rgba(0, 255, 0, 0.1)
+            `;
+        }, 2000);
+
+        // Dynamic typing effect for terminal
+        const terminalPrompt = document.querySelector('.typing-animation');
+        const commands = [
+            'help',
+            'ls -la',
+            'cat about.txt',
+            'python riemann_hypothesis.py',
+            'shoot_hoops()',
+            'compile research.tex',
+            'git commit -m "another breakthrough"'
+        ];
+        let commandIndex = 0;
+
+        setInterval(() => {
+            const command = commands[commandIndex];
+            terminalPrompt.textContent = command + '█';
+            commandIndex = (commandIndex + 1) % commands.length;
+        }, 4000);
+
+        // Particle effect for background
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.style.position = 'fixed';
+            particle.style.width = '2px';
+            particle.style.height = '2px';
+            particle.style.background = '#00ff00';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = '100%';
+            particle.style.pointerEvents = 'none';
+            particle.style.opacity = '0.5';
+            particle.style.zIndex = '1';
+            document.body.appendChild(particle);
+
+            const animation = particle.animate([
+                { transform: 'translateY(0)', opacity: 0.5 },
+                { transform: 'translateY(-100vh)', opacity: 0 }
+            ], {
+                duration: Math.random() * 3000 + 2000,
+                easing: 'linear'
             });
+
+            animation.onfinish = () => {
+                particle.remove();
+            };
+        }
+
+        // Create particles periodically
+        setInterval(createParticle, 500);
+
+        // Add hover effects for social buttons
+        document.querySelectorAll('.social-btn').forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                btn.style.transform = 'translateY(-3px) scale(1.05)';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Add click sound effect (visual feedback)
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('card-link') || 
+                e.target.classList.contains('ui-element') ||
+                e.target.classList.contains('social-btn')) {
+                e.target.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    e.target.style.transform = 'scale(1)';
+                }, 100);
+            }
+        });
+        // Basketball Physics System
+class BasketballPhysics {
+    constructor() {
+        this.isDragging = false;
+        this.startX = 0;
+        this.startY = 0;
+        this.playerStats = {
+            shots: 0,
+            makes: 0,
+            dribbles: 0,
+            accuracy: 0,
+            rhythm: 0
+        };
+        this.shotClock = 24;
+        this.clockRunning = false;
+        this.leaderboard = [];
+        this.heatMapData = [];
+        this.initializePhysics();
+    }
+
+    initializePhysics() {
+        // Add basketball hoop
+        const hoop = document.createElement('div');
+        hoop.className = 'basketball-hoop';
+        document.querySelector('.basketball-court').appendChild(hoop);
+
+        // Add shot clock
+        const shotClock = document.createElement('div');
+        shotClock.className = 'shot-clock';
+        shotClock.textContent = '24';
+        document.querySelector('.basketball-court').appendChild(shotClock);
+
+        // Add dribble game
+        const dribbleGame = document.createElement('div');
+        dribbleGame.className = 'dribble-game';
+        dribbleGame.innerHTML = `
+            <div>DRIBBLE GAME</div>
+            <div class="dribble-beat">
+                <div class="beat-indicator"></div>
+            </div>
+            <div>Press SPACE on beat!</div>
+        `;
+        document.querySelector('.basketball-court').appendChild(dribbleGame);
+
+        // Add analytics dashboard
+        const dashboard = document.createElement('div');
+        dashboard.className = 'analytics-dashboard';
+        dashboard.innerHTML = `
+            <h3>PLAYER STATS</h3>
+            <div class="stat-item"><span>SHOTS:</span><span id="stat-shots">0</span></div>
+            <div class="stat-item"><span>MAKES:</span><span id="stat-makes">0</span></div>
+            <div class="stat-item"><span>ACCURACY:</span><span id="stat-accuracy">0%</span></div>
+            <div class="stat-item"><span>DRIBBLES:</span><span id="stat-dribbles">0</span></div>
+            <div class="stat-item"><span>RHYTHM:</span><span id="stat-rhythm">0</span></div>
+        `;
+        document.body.appendChild(dashboard);
+
+        // Add leaderboard
+        const leaderboard = document.createElement('div');
+        leaderboard.className = 'leaderboard';
+        leaderboard.innerHTML = `
+            <h3>LEADERBOARD</h3>
+            <div id="leaderboard-entries"></div>
+        `;
+        document.querySelector('.basketball-court').appendChild(leaderboard);
+
+        // Add tournament bracket
+        const bracket = document.createElement('div');
+        bracket.className = 'tournament-bracket';
+        bracket.innerHTML = `
+            <h2>MARCH MADNESS PORTFOLIO</h2>
+            <div style="display: flex;">
+                <div class="bracket-round">
+                    <div class="bracket-match" data-section="about">ABOUT vs RESUME</div>
+                    <div class="bracket-match" data-section="honors">HONORS vs AWARDS</div>
+                </div>
+                <div class="bracket-round">
+                    <div class="bracket-match" data-section="papers">PAPERS vs RESEARCH</div>
+                    <div class="bracket-match" data-section="terminal">TERMINAL vs SKILLS</div>
+                </div>
+            </div>
+            <button onclick="this.parentElement.classList.remove('active')">CLOSE</button>
+        `;
+        document.body.appendChild(bracket);
+
+        this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+        const court = document.querySelector('.basketball-court');
+        const basketball = document.querySelector('.basketball');
+
+        // Shot trajectory system
+        basketball.addEventListener('mousedown', (e) => {
+            this.isDragging = true;
+            this.startX = e.clientX;
+            this.startY = e.clientY;
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (this.isDragging) {
+                this.showTrajectory(this.startX, this.startY, e.clientX, e.clientY);
+            }
+        });
+
+        document.addEventListener('mouseup', (e) => {
+            if (this.isDragging) {
+                this.shootBall(this.startX, this.startY, e.clientX, e.clientY);
+                this.isDragging = false;
+                this.clearTrajectory();
+            }
+        });
+
+        // Dribble game
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                this.dribble();
+                e.preventDefault();
+            }
+        });
+
+        // Heat map tracking
+        court.addEventListener('click', (e) => {
+            this.addHeatPoint(e.clientX, e.clientY);
+        });
+
+        // Tournament bracket
+        document.querySelectorAll('.bracket-match').forEach(match => {
+            match.addEventListener('click', () => {
+                const section = match.getAttribute('data-section');
+                document.getElementById('portfolioContent').classList.add('active');
+                setTimeout(() => {
+                    document.getElementById(section).scrollIntoView({ behavior: 'smooth' });
+                }, 800);
+                match.parentElement.parentElement.parentElement.classList.remove('active');
+            });
+        });
+
+        // Show tournament bracket on UI click
+        document.querySelectorAll('.ui-element').forEach(element => {
+            element.addEventListener('dblclick', () => {
+                document.querySelector('.tournament-bracket').classList.add('active');
+            });
+        });
+    }
+
+    showTrajectory(startX, startY, endX, endY) {
+        this.clearTrajectory();
+        const distance = Math.sqrt((endX - startX) ** 2 + (endY - startY) ** 2);
+        const steps = Math.floor(distance / 10);
+        
+        for (let i = 0; i <= steps; i++) {
+            const t = i / steps;
+            const x = startX + (endX - startX) * t;
+            const y = startY + (endY - startY) * t - 200 * t * (1 - t); // Arc effect
             
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0) scale(1)';
-            });
-        });
+            const point = document.createElement('div');
+            point.className = 'shot-trajectory';
+            point.style.left = x + 'px';
+            point.style.top = y + 'px';
+            document.body.appendChild(point);
+        }
+    }
 
-        // Add subtle parallax effect to floating shapes
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const shapes = document.querySelectorAll('.shape');
-            shapes.forEach((shape, index) => {
-                const speed = 0.5 + (index * 0.1);
-                shape.style.transform = `translateY(${scrolled * speed}px)`;
-            });
-        });
+    clearTrajectory() {
+        document.querySelectorAll('.shot-trajectory').forEach(point => point.remove());
+    }
+
+    shootBall(startX, startY, endX, endY) {
+        this.playerStats.shots++;
+        this.startShotClock();
+        
+        const power = Math.sqrt((endX - startX) ** 2 + (endY - startY) ** 2);
+        const accuracy = Math.random() * 0.3 + (power > 100 ? 0.7 : 0.4);
+        
+        if (accuracy > 0.6) {
+            this.playerStats.makes++;
+            this.createShotEffect(true);
+        } else {
+            this.createShotEffect(false);
+        }
+        
+        this.updateStats();
+    }
+
+    createShotEffect(made) {
+        const basketball = document.querySelector('.basketball');
+        basketball.style.transform = made ? 
+            'translate(-50%, -50%) scale(0.5)' : 
+            'translate(-50%, -50%) scale(1.2) rotate(180deg)';
+        
+        setTimeout(() => {
+            basketball.style.transform = 'translate(-50%, -50%) scale(1)';
+        }, 500);
+    }
+
+    dribble() {
+        const beatIndicator = document.querySelector('.beat-indicator');
+        const computedStyle = window.getComputedStyle(beatIndicator);
+        const leftPosition = parseInt(computedStyle.left);
+        const accuracy = Math.abs(leftPosition - 50);
+        
+        if (accuracy < 20) {
+            this.playerStats.dribbles++;
+            this.playerStats.rhythm = Math.min(100, this.playerStats.rhythm + 10);
+        } else {
+            this.playerStats.rhythm = Math.max(0, this.playerStats.rhythm - 5);
+        }
+        
+        this.updateStats();
+    }
+
+    startShotClock() {
+        if (!this.clockRunning) {
+            this.clockRunning = true;
+            this.shotClock = 24;
+            
+            const clockInterval = setInterval(() => {
+                this.shotClock--;
+                document.querySelector('.shot-clock').textContent = this.shotClock;
+                
+                if (this.shotClock <= 0) {
+                    clearInterval(clockInterval);
+                    this.clockRunning = false;
+                    this.shotClock = 24;
+                    document.querySelector('.shot-clock').textContent = '24';
+                }
+            }, 1000);
+        }
+    }
+
+    addHeatPoint(x, y) {
+        const heatPoint = document.createElement('div');
+        heatPoint.className = 'heat-point';
+        heatPoint.style.left = x + 'px';
+        heatPoint.style.top = y + 'px';
+        document.body.appendChild(heatPoint);
+        
+        setTimeout(() => heatPoint.remove(), 2000);
+        
+        this.heatMapData.push({ x, y, timestamp: Date.now() });
+    }
+
+    updateStats() {
+        this.playerStats.accuracy = this.playerStats.shots > 0 ? 
+            Math.round((this.playerStats.makes / this.playerStats.shots) * 100) : 0;
+        
+        document.getElementById('stat-shots').textContent = this.playerStats.shots;
+        document.getElementById('stat-makes').textContent = this.playerStats.makes;
+        document.getElementById('stat-accuracy').textContent = this.playerStats.accuracy + '%';
+        document.getElementById('stat-dribbles').textContent = this.playerStats.dribbles;
+        document.getElementById('stat-rhythm').textContent = this.playerStats.rhythm;
+        
+        // Show dashboard temporarily
+        const dashboard = document.querySelector('.analytics-dashboard');
+        dashboard.classList.add('active');
+        setTimeout(() => dashboard.classList.remove('active'), 3000);
+        
+        this.updateLeaderboard();
+    }
+
+    updateLeaderboard() {
+        const totalScore = this.playerStats.makes * 10 + this.playerStats.dribbles * 5 + this.playerStats.rhythm;
+        const entry = {
+            name: 'VISITOR_' + Math.floor(Math.random() * 1000),
+            score: totalScore,
+            accuracy: this.playerStats.accuracy
+        };
+        
+        this.leaderboard.push(entry);
+        this.leaderboard.sort((a, b) => b.score - a.score);
+        this.leaderboard = this.leaderboard.slice(0, 5);
+        
+        const leaderboardHtml = this.leaderboard.map((entry, index) => 
+            `<div class="leaderboard-entry">
+                <span>#${index + 1} ${entry.name}</span>
+                <span>${entry.score}pts</span>
+            </div>`
+        ).join('');
+        
+        document.getElementById('leaderboard-entries').innerHTML = leaderboardHtml;
+    }
+}
+
+// Initialize Basketball Physics
+const basketballPhysics = new BasketballPhysics();
+
+// Add Three.js court (simplified version)
+function init3DCourt() {
+    // This would require the Three.js library to be fully implemented
+    // For now, we'll add a 3D CSS transform effect
+    const court = document.querySelector('.basketball-court');
+    court.style.transform = 'perspective(1000px) rotateX(10deg)';
+    
+    // Add rotation on hover
+    court.addEventListener('mouseenter', () => {
+        court.style.transform = 'perspective(1000px) rotateX(15deg) rotateY(5deg)';
+    });
+    
+    court.addEventListener('mouseleave', () => {
+        court.style.transform = 'perspective(1000px) rotateX(10deg)';
+    });
+}
+
+// Initialize 3D effects
+setTimeout(init3DCourt, 4000);
     </script>
 </body>
 </html>
